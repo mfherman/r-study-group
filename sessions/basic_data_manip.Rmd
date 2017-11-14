@@ -1,0 +1,134 @@
+---
+title: "Basic Data Manipulation in R"
+author: "Matt Herman"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basic Data Manipulation in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::knit_hooks$set(inline = function(x) {prettyNum(x, big.mark = ",")})
+```
+## Introduction
+
+Today, we'll go over some basic data manipulation techniques in R. We'll use functions from the `tidyverse` package to filter, select, and summarize data. Before we start, a quick review from last time. What is a:
+
+* vector
+* data frame
+* function
+* package
+* `<-`
+
+Great! You remember everything.
+
+Just a quick note on formatting. Whenever I refer to a package or function within the text, I will change the formatting so you know I'm referring to something specific. I'm a package: `dplyr`! I'm a function: `filter()`! Sometimes I'll include a few lines of code and in that case, it will be set off from the main text in a code block like so:
+
+```{r format_ex, eval = FALSE}
+library(tidyverse)
+slow_cars <- mtcars %>%
+  filter(hp < 150)
+```
+
+Whenever you see code like this, you can run it in your version of R Studio. You should type the code you see here into your R Studio script rather than copying and pasting. It will help you get used to writing code!
+
+## Data Manipulation with the `gss_cat` Dataset
+
+Today we're going to manipulate and transform some data and hopefully you can start to see the power of R. For all of the code that follows, we'll work with a GSS dataset that is built into the `forcats` package. To access this data, first load the `forcats` library, then tell R we're going be using data called `gss_cat`, and then open the data in the viewer to check it out.
+
+```{r load_gss}
+library(forcats)
+data(gss_cat)
+View(gss_cat)
+```
+
+Great! It's there. It's a data frame! We can also look at the Environment pane in the upper right hand side of R Studio and we should see an object called `gss_cat`. Click on the small blue arrow to left of `gss_cat` and you'll get a list of all the variables in the data frame along with the variable types. You can also open the data viewer by clicking on the name of the data frame in the Environment pane.
+
+### Filter Rows with `filter()`
+
+Now, let's say we want to create a new dataset that is a subset of the main GSS dataset. Maybe we just want Black respondents. Or maybe we just want observations from after 2008. That's a job for the `filter()` function. `filter()` will return rows that match any criteria you feed to `filter()`.
+
+Let's start by creating a new data frame called `gss_black` that contains only respondents who reported their race to be Black.
+
+```{r filter_black}
+library(tidyverse)
+gss_black <- filter(gss_cat, race == "Black")
+gss_black
+```
+
+The general syntax to filter rows is `filter(data frame, logical statement)`. After we assigned the object `gss_black`, we ran `gss_black` into the console to get R to quick look at the dataset. We can see there are `r nrow(gss_black)` observations of `r ncol(gss_black)` variables. In addition, the first 10 rows of the dataset print in the console along with data type of each variable. Note that we had to use `==`, not `=` to filter because we are doing a comparison, not an assignment. In other words, we are asking R to compare all records in the race column of `gss_cat` to `"Black"`. Also note we needed to put `"Black"` in quotation marks. 
+
+Next, we will further filter the `gss_black` data frame to only include observations in the 2010, 2012, and 2014 surveys.
+
+```{r filter 2010_14}
+gss_black_recent <- filter(gss_black, year > 2008)
+gss_black_recent
+```
+
+The `filter()` function relies on Boolean logic so you can use all of our usual logical operator friends when filtering:
+
+* `==` (is equal to)
+* `<` (less than)
+* `>` (greater than)
+* `<=` (less than or equal to)
+* `>=` (greater than or equal to)
+* `!` (not)
+* `&` (and)
+* `|` (or)
+
+You can also combine operations into one `filter` command. For example, let's create a new data frame that is only white Protestants over the age of 50.
+
+```{r filter old white}
+trump_voters <- filter(gss_cat, race == "White" & age > 50 & relig == "Protestant")
+trump_voters
+```
+
+### Select columns with `select()`
+Now that we've filtered our data frames, maybe we also want to get rid of some variables we don't need for our analysis. This is a job for the `select()` function. It helps us select the columns to keep in our data frame and discards the rest.
+
+```{r select}
+gss_small <- select(gss_cat, year, age, race, tvhours)
+gss_small
+```
+Another nice feature of the `select()` function is the ability to rename columns as you select them. Let's select the same columns as above, but rename tvhours to weekly_tv.
+
+```{r rename}
+gss_rename <- select(gss_cat, year, age, race, weekly_tv = tvhours)
+gss_rename
+```
+
+So to generalize, the syntax is `select(data frame, new_col_name = old_col_name)`.s
+
+### Summary statistics with `summarize()`
+
+We can also calculate some simple summary statistics.
+
+```{r summary_stats}
+summarize(gss_cat,
+          n = n(),
+          age_mean = mean(age, na.rm = TRUE),
+          age_med = median(age, na.rm = TRUE),
+          tv_mean = mean(tvhours, na.rm = TRUE)
+          )
+```
+
+One important note here is that I included `na.rm = TRUE` in the `mean()` and `median()` function calls. This ensures that any missing or `NA` data is dropped when computing the summary statistics. In this case, I know there is some missing data, so if we hadn't included `na.rm = TRUE`, the result would be `NA` because R does not know how to average missing data.
+
+Next up is a simple, but powerful tool to extend the `summarize()` function: `group_by()`. Using this function we can generate grouped data summaries. So now we will calculate the same summary statistics as before, but instead of for the whole dataset, we will get means and medians by race.
+
+```{r grouped summary}
+group_by(gss_cat, race) %>%
+  summarize(
+    n = n(),
+    age_mean = mean(age, na.rm = TRUE),
+    age_med = median(age, na.rm = TRUE),
+    tv_mean = mean(tvhours, na.rm = TRUE)
+  )
+```
+
+Cool! In this sample, we see that on average, Black people report watching more hours of TV than white people. Note that this is the exact same code as the last summary, except we added `group_by(gss_cat, race) %>%` before the `summarize()` function. This is saying that before you calculate the mean, group the data frame by the `race` variable and then calculate the mean for each group.
+
+Also, note the use of the `%>%` (pipe). We will talk about this in more detail in another session, but the important thing to know is that the pipe is used to chain functions together. We can think of what the pipe operator does as "and then." So in plain English, what we did above was to group `gss_cat` by `race` and then `summarize` the n, mean, and median of each group.
