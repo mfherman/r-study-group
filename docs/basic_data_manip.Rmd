@@ -55,7 +55,7 @@ gss_black <- filter(gss_cat, race == "Black")
 gss_black
 ```
 
-The general syntax to filter rows is `filter(data frame, logical statement)`. After we assigned the object `gss_black`, we ran `gss_black` into the console to get R to quick look at the dataset. We can see there are `r nrow(gss_black)` observations of `r ncol(gss_black)` variables. In addition, the first 10 rows of the dataset print in the console along with data type of each variable. Note that we had to use `==`, not `=` to filter because we are doing a comparison, not an assignment. In other words, we are asking R to compare all records in the race column of `gss_cat` to `"Black"`. Also note we needed to put `"Black"` in quotation marks. 
+The general syntax to filter rows is `filter(data, logical_statement)`. After we assigned the object `gss_black`, we ran `gss_black` into the console to get R to quick look at the dataset. We can see there are `r nrow(gss_black)` observations of `r ncol(gss_black)` variables. In addition, the first 10 rows of the dataset print in the console along with data type of each variable. Note that we had to use `==`, not `=` to filter because we are doing a comparison, not an assignment. In other words, we are asking R to compare all records in the race column of `gss_cat` to `"Black"`. Also note we needed to put `"Black"` in quotation marks. 
 
 Next, we will further filter the `gss_black` data frame to only include observations in the 2010, 2012, and 2014 surveys.
 
@@ -96,7 +96,7 @@ gss_rename <- select(gss_cat, year, age, race, weekly_tv = tvhours)
 gss_rename
 ```
 
-So to generalize, the syntax is `select(data frame, new_col_name = old_col_name)`.s
+So to generalize, the syntax is `select(data, new_col_name = old_col_name)`.
 
 ### Summary statistics with `summarize()`
 
@@ -111,7 +111,7 @@ summarize(gss_cat,
           )
 ```
 
-One important note here is that I included `na.rm = TRUE` in the `mean()` and `median()` function calls. This ensures that any missing or `NA` data is dropped when computing the summary statistics. In this case, I know there is some missing data, so if we hadn't included `na.rm = TRUE`, the result would be `NA` because R does not know how to average missing data.
+so the general form of `summarize()` is `summarize(data, new_col_name = summary_function(variable))`. You can include as many summary variables as you want but adding new variables and summary functions after a comma. In the above example, we are creating four summary variables. One important note here is that I included `na.rm = TRUE` in the `mean()` and `median()` function calls. This ensures that any missing or `NA` data is dropped when computing the summary statistics. In this case, I know there is some missing data, so if we hadn't included `na.rm = TRUE`, the result would be `NA` because R does not know how to average missing data.
 
 Next up is a simple, but powerful tool to extend the `summarize()` function: `group_by()`. Using this function we can generate grouped data summaries. So now we will calculate the same summary statistics as before, but instead of for the whole dataset, we will get means and medians by race.
 
@@ -128,3 +128,4 @@ group_by(gss_cat, race) %>%
 Cool! In this sample, we see that on average, Black people report watching more hours of TV than white people. Note that this is the exact same code as the last summary, except we added `group_by(gss_cat, race) %>%` before the `summarize()` function. This is saying that before you calculate the mean, group the data frame by the `race` variable and then calculate the mean for each group.
 
 Also, note the use of the `%>%` (pipe). We will talk about this in more detail in another session, but the important thing to know is that the pipe is used to chain functions together. We can think of what the pipe operator does as "and then." So in plain English, what we did above was to group `gss_cat` by `race` and then `summarize` the n, mean, and median of each group.
+
