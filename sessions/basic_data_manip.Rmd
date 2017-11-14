@@ -2,11 +2,7 @@
 title: "Basic Data Manipulation in R"
 author: "Matt Herman"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Basic Data Manipulation in R}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include = FALSE}
