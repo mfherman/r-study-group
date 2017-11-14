@@ -74,7 +74,7 @@ gss_black
 #> #   denom <fctr>, tvhours <int>
 ```
 
-The general syntax to filter rows is `filter(data frame, logical statement)`. After we assigned the object `gss_black`, we ran `gss_black` into the console to get R to quick look at the dataset. We can see there are 3,129 observations of 9 variables. In addition, the first 10 rows of the dataset print in the console along with data type of each variable. Note that we had to use `==`, not `=` to filter because we are doing a comparison, not an assignment. In other words, we are asking R to compare all records in the race column of `gss_cat` to `"Black"`. Also note we needed to put `"Black"` in quotation marks.
+The general syntax to filter rows is `filter(data, logical_statement)`. After we assigned the object `gss_black`, we ran `gss_black` into the console to get R to quick look at the dataset. We can see there are 3,129 observations of 9 variables. In addition, the first 10 rows of the dataset print in the console along with data type of each variable. Note that we had to use `==`, not `=` to filter because we are doing a comparison, not an assignment. In other words, we are asking R to compare all records in the race column of `gss_cat` to `"Black"`. Also note we needed to put `"Black"` in quotation marks.
 
 Next, we will further filter the `gss_black` data frame to only include observations in the 2010, 2012, and 2014 surveys.
 
@@ -175,7 +175,7 @@ gss_rename
 #> # ... with 21,473 more rows
 ```
 
-So to generalize, the syntax is `select(data frame, new_col_name = old_col_name)`.s
+So to generalize, the syntax is `select(data, new_col_name = old_col_name)`.
 
 ### Summary statistics with `summarize()`
 
@@ -194,7 +194,7 @@ summarize(gss_cat,
 #> 1 21483 47.18008      46 2.980771
 ```
 
-One important note here is that I included `na.rm = TRUE` in the `mean()` and `median()` function calls. This ensures that any missing or `NA` data is dropped when computing the summary statistics. In this case, I know there is some missing data, so if we hadn't included `na.rm = TRUE`, the result would be `NA` because R does not know how to average missing data.
+so the general form of `summarize()` is `summarize(data, new_col_name = summary_function(variable))`. You can include as many summary variables as you want but adding new variables and summary functions after a comma. In the above example, we are creating four summary variables. One important note here is that I included `na.rm = TRUE` in the `mean()` and `median()` function calls. This ensures that any missing or `NA` data is dropped when computing the summary statistics. In this case, I know there is some missing data, so if we hadn't included `na.rm = TRUE`, the result would be `NA` because R does not know how to average missing data.
 
 Next up is a simple, but powerful tool to extend the `summarize()` function: `group_by()`. Using this function we can generate grouped data summaries. So now we will calculate the same summary statistics as before, but instead of for the whole dataset, we will get means and medians by race.
 
