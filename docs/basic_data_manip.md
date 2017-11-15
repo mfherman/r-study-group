@@ -1,18 +1,18 @@
 Basic Data Manipulation in R
 ================
 Matt Herman
-2017-11-14
+2017-11-15
 
 Introduction
 ------------
 
 Today, we'll go over some basic data manipulation techniques in R. We'll use functions from the `tidyverse` package to filter, select, and summarize data. Before we start, a quick review from last time. What is a:
 
--   vector
 -   data frame
 -   function
 -   package
 -   `<-`
+-   `%>%`
 
 Great! You remember everything.
 
@@ -29,7 +29,7 @@ Whenever you see code like this, you can run it in your version of R Studio. You
 Data Manipulation with the `gss_cat` Dataset
 --------------------------------------------
 
-Today we're going to manipulate and transform some data and hopefully you can start to see the power of R. For all of the code that follows, we'll work with a GSS dataset that is built into the `forcats` package. To access this data, first load the `forcats` library, then tell R we're going be using data called `gss_cat`, and then open the data in the viewer to check it out.
+Today we're going to manipulate and transform some data and hopefully you can start to see the power of R. For all of the code that follows, we'll work with a GSS dataset that is built into the `forcats` package. To access this data, first load the `forcats` library, then tell R we're going be using data called `gss_cat`, and then open the data in the viewer to check it out. Try it!
 
 ``` r
 library(forcats)
@@ -47,14 +47,14 @@ Let's start by creating a new data frame called `gss_black` that contains only r
 
 ``` r
 library(tidyverse)
-#> -- Attaching packages -------------------------------------------------------------------------------------- tidyverse 1.2.1 --
-#> v ggplot2 2.2.1     v readr   1.1.1
-#> v tibble  1.3.4     v purrr   0.2.4
-#> v tidyr   0.7.2     v dplyr   0.7.4
-#> v ggplot2 2.2.1     v stringr 1.2.0
-#> -- Conflicts ----------------------------------------------------------------------------------------- tidyverse_conflicts() --
-#> x dplyr::filter() masks stats::filter()
-#> x dplyr::lag()    masks stats::lag()
+#> ── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+#> ✔ ggplot2 2.2.1.9000     ✔ readr   1.1.1     
+#> ✔ tibble  1.3.4          ✔ purrr   0.2.4     
+#> ✔ tidyr   0.7.2          ✔ dplyr   0.7.4     
+#> ✔ ggplot2 2.2.1.9000     ✔ stringr 1.2.0
+#> ── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+#> ✖ dplyr::filter() masks stats::filter()
+#> ✖ dplyr::lag()    masks stats::lag()
 gss_black <- filter(gss_cat, race == "Black")
 gss_black
 #> # A tibble: 3,129 x 9
@@ -74,7 +74,9 @@ gss_black
 #> #   denom <fctr>, tvhours <int>
 ```
 
-The general syntax to filter rows is `filter(data, logical_statement)`. After we assigned the object `gss_black`, we ran `gss_black` into the console to get R to quick look at the dataset. We can see there are 3,129 observations of 9 variables. In addition, the first 10 rows of the dataset print in the console along with data type of each variable. Note that we had to use `==`, not `=` to filter because we are doing a comparison, not an assignment. In other words, we are asking R to compare all records in the race column of `gss_cat` to `"Black"`. Also note we needed to put `"Black"` in quotation marks.
+The general syntax to filter rows is `filter(data, logical_statement)`. After we assigned the object `gss_black`, we printed `gss_black` to get a quick look at the dataset. We can see there are 3,129 observations of 9 variables. In addition, the first 10 rows of the dataset print in the console along with data type of each variable. This is an alternative to viewing the entire data frame in the viewer window.
+
+Note that we had to use `==`, not `=` to filter because we are doing a comparison, not an assignment. In other words, we are asking R to compare all records in the race column of `gss_cat` to `"Black"` and return the ones where that condition is `TRUE`. Also note we needed to put `"Black"` in quotation marks for this to work.
 
 Next, we will further filter the `gss_black` data frame to only include observations in the 2010, 2012, and 2014 surveys.
 
@@ -105,11 +107,11 @@ The `filter()` function relies on Boolean logic so you can use all of our usual 
 -   `>` (greater than)
 -   `<=` (less than or equal to)
 -   `>=` (greater than or equal to)
--   `!` (not)
+-   `!=` (is not equal to)
 -   `&` (and)
 -   `|` (or)
 
-You can also combine operations into one `filter` command. For example, let's create a new data frame that is only white Protestants over the age of 50.
+You can also combine operations into one `filter()` call. For example, let's create a new data frame that is only white Protestants over the age of 50.
 
 ``` r
 trump_voters <- filter(gss_cat, race == "White" & age > 50 & relig == "Protestant")
@@ -175,7 +177,7 @@ gss_rename
 #> # ... with 21,473 more rows
 ```
 
-So to generalize, the syntax is `select(data, new_col_name = old_col_name)`.
+To generalize, the syntax is `select(data, new_col_name = old_col_name)`.
 
 ### Summary statistics with `summarize()`
 
@@ -194,9 +196,9 @@ summarize(gss_cat,
 #> 1 21483 47.18008      46 2.980771
 ```
 
-so the general form of `summarize()` is `summarize(data, new_col_name = summary_function(variable))`. You can include as many summary variables as you want but adding new variables and summary functions after a comma. In the above example, we are creating four summary variables. One important note here is that I included `na.rm = TRUE` in the `mean()` and `median()` function calls. This ensures that any missing or `NA` data is dropped when computing the summary statistics. In this case, I know there is some missing data, so if we hadn't included `na.rm = TRUE`, the result would be `NA` because R does not know how to average missing data.
+The general form of `summarize()` is `summarize(data, new_col_name = summary_function(variable))`. You can include as many summary variables as you want by adding new variables and summary functions after a comma. In the above example, we are creating four summary variables. One important note here is that I included `na.rm = TRUE` in the `mean()` and `median()` function calls. This ensures that any missing or `NA` data is dropped when computing the summary statistics. In this case, I know there is some missing data in these variables. If we hadn't included `na.rm = TRUE`, the result would be `NA` because R does not know how to generate the mean or median from missing data unless we explicitly tell R what to do with the `NA` values.
 
-Next up is a simple, but powerful tool to extend the `summarize()` function: `group_by()`. Using this function we can generate grouped data summaries. So now we will calculate the same summary statistics as before, but instead of for the whole dataset, we will get means and medians by race.
+Next up is a simple, but powerful tool to extend the `summarize()` function: `group_by()`. Using this function we can generate grouped data summaries. Now we will calculate the same summary statistics as above, but instead of for the whole dataset, we will get means and medians segemented by race.
 
 ``` r
 group_by(gss_cat, race) %>%
@@ -216,4 +218,4 @@ group_by(gss_cat, race) %>%
 
 Cool! In this sample, we see that on average, Black people report watching more hours of TV than white people. Note that this is the exact same code as the last summary, except we added `group_by(gss_cat, race) %>%` before the `summarize()` function. This is saying that before you calculate the mean, group the data frame by the `race` variable and then calculate the mean for each group.
 
-Also, note the use of the `%>%` (pipe). We will talk about this in more detail in another session, but the important thing to know is that the pipe is used to chain functions together. We can think of what the pipe operator does as "and then." So in plain English, what we did above was to group `gss_cat` by `race` and then `summarize` the n, mean, and median of each group.
+Also, note the use of the `%>%` (pipe). We will talk about this in more detail in another session, but the important thing to know is that the pipe is used to chain functions together. We can think of what the pipe operator does as "and then." So in plain English, what we did above was to group `gss_cat` by `race` and then `summarize` n, mean, and median of each group.
