@@ -7,7 +7,7 @@ output: rmarkdown::github_document
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.path = "./output/figures/")
 knitr::knit_hooks$set(inline = function(x) {prettyNum(x, big.mark = ",")})
 ```
 ## Introduction

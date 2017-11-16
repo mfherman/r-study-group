@@ -233,7 +233,7 @@ ggplot(gss_cat) +
 #> Warning: Removed 76 rows containing non-finite values (stat_bin).
 ```
 
-![](basic_data_manip_files/figure-markdown_github/age%20histogram-1.png)
+![](./output/figures/age%20histogram-1.png)
 
 Ok, that's kind of boring. Let's spice it up a little and look at the age distribution, but segmented by race. Maybe the white folks in the GSS sample are older than other races? For this, we'll use a variation on the histogram, the density plot. Don't worry too much about the mathematical details of the plot, just know it represents a smoothed version of a histogram.
 
@@ -243,7 +243,7 @@ ggplot(gss_cat) +
 #> Warning: Removed 76 rows containing non-finite values (stat_density).
 ```
 
-![](basic_data_manip_files/figure-markdown_github/age%20density-1.png)
+![](./output/figures/age%20density-1.png)
 
 That's more interesting! And pretty colors too! Also, I was right—the white folks are older!
 
@@ -254,7 +254,7 @@ ggplot(gss_cat) +
   geom_bar(aes(race))
 ```
 
-![](basic_data_manip_files/figure-markdown_github/race%20bar%20plot-1.png)
+![](./output/figures/race%20bar%20plot-1.png)
 
 To add another variable to this chart, let's also look at the distribution of marital status within each race. We'll create a stacked bar chart where each bar segment represents the proportion that has each marital status. I'll also change the colors and add a title, legend, and appropriate scale.
 
@@ -271,7 +271,7 @@ ggplot(gss_cat) +
   theme_bw()
 ```
 
-![](basic_data_manip_files/figure-markdown_github/stacked%20bar%20plot-1.png)
+![](./output/figures/stacked%20bar%20plot-1.png)
 
 There's a lot I threw into that code, but the main point is that `ggplot2` is endlessly customizable. As you add new features and options to a `ggplot` object, you combine the commands with `+`. This acts very much like `%>%` in that it chains multiple lines of code together.
 
