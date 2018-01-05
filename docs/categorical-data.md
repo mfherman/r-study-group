@@ -17,7 +17,11 @@ Great! You remember everything.
 Data Manipulation with the `gss_cat` Dataset
 --------------------------------------------
 
+<<<<<<< HEAD
 We'll pick up [where we left off last time](https://github.com/mfherman/r-study-group/blob/master/docs/basic_data_manip.md) and continue using we'll work with a GSS dataset that is built into the `forcats` package. To access this data, first load the `forcats` library, then tell R we're going to be using data called `gss_cat`, and then open the data in the viewer to check it out. Try it!
+=======
+We'll pick up [where we left off last time](%22https://github.com/mfherman/r-study-group/blob/master/docs/basic_data_manip.md%22) ) and continue using we'll work with a GSS dataset that is built into the `forcats` package. To access this data, first load the `forcats` library, then tell R we're going to be using data called `gss_cat`, and then open the data in the viewer to check it out. Try it!
+>>>>>>> f24d2f337a2a4450b1db1c72bdebe429adea00b3
 
 ``` r
 library(forcats)
