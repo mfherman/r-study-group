@@ -1,4 +1,4 @@
-Basic Data Manipulation in R
+Basic Data Manupulation in R Part 2
 ================
 Matt Herman
 2018-01-05
@@ -6,30 +6,18 @@ Matt Herman
 Introduction
 ------------
 
-Today, we'll go over some basic data manipulation techniques in R. We'll use functions from the `tidyverse` packages to filter, select, and summarize data. Before we start, a quick review from last time. What is a:
+Today, we'll go over how some additional data manipulation techniques manipulation techniques in R. We'll use functions from the `tidyverse` packages to calculate new variables in a data frame, sort data frames, recode categorical variables, and join multiple data frames. Before we start, a quick review of the functions we talked about last time:
 
--   data frame
--   function
--   package
--   `<-`
--   `%>%`
+-   `filter()`
+-   `select()`
+-   `summarize()`
 
 Great! You remember everything.
-
-Just a quick note on formatting. Whenever I refer to a package or function within the text, I will change the formatting so you know I'm referring to something specific. I'm a package: `dplyr`! I'm a function: `filter()`! Sometimes I'll include a few lines of code and in that case, it will be set off from the main text in a code block like so:
-
-``` r
-library(tidyverse)
-slow_cars <- mtcars %>%
-  filter(hp < 150)
-```
-
-Whenever you see code like this, you can run it in your version of R Studio. You should type the code you see here into your R Studio script rather than copying and pasting. It will help you get used to writing code!
 
 Data Manipulation with the `gss_cat` Dataset
 --------------------------------------------
 
-Today we're going to manipulate and transform some data and hopefully you can start to see the power of R. For all of the code that follows, we'll work with a GSS dataset that is built into the `forcats` package. To access this data, first load the `forcats` library, then tell R we're going to be using data called `gss_cat`, and then open the data in the viewer to check it out. Try it!
+We'll pick up [where we left off last time](%22https://github.com/mfherman/r-study-group/blob/master/docs/basic_data_manip.md%22) ) and continue using we'll work with a GSS dataset that is built into the `forcats` package. To access this data, first load the `forcats` library, then tell R we're going to be using data called `gss_cat`, and then open the data in the viewer to check it out. Try it!
 
 ``` r
 library(forcats)
@@ -47,12 +35,12 @@ Let's start by creating a new data frame called `gss_black` that contains only r
 
 ``` r
 library(tidyverse)
-#> ── Attaching packages ─────────────────────────────────────────────────── tidyverse 1.2.1 ──
+#> ── Attaching packages ─────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 #> ✔ ggplot2 2.2.1.9000     ✔ readr   1.1.1.9000
 #> ✔ tibble  1.4.1          ✔ purrr   0.2.4.9000
 #> ✔ tidyr   0.7.2.9000     ✔ dplyr   0.7.4.9000
 #> ✔ ggplot2 2.2.1.9000     ✔ stringr 1.3.0
-#> ── Conflicts ────────────────────────────────────────────────────── tidyverse_conflicts() ──
+#> ── Conflicts ────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
 #> ✖ dplyr::lag()    masks stats::lag()
 gss_black <- filter(gss_cat, race == "Black")
