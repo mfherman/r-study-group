@@ -1,126 +1,131 @@
 Basic Data Manupulation in R Part 2
 ================
 Matt Herman
-2018-01-05
+2018-01-07
 
 Introduction
 ------------
 
-Today, we'll go over how some additional data manipulation techniques manipulation techniques in R. We'll use functions from the `tidyverse` packages to calculate new variables in a data frame, sort data frames, recode categorical variables, and join multiple data frames. Before we start, a quick review of the functions we talked about last time:
+Today, we'll go over how some additional data manipulation techniques in R. We'll use functions from the `tidyverse` packages to calculate new variables in a data frame, sort data frames, recode categorical variables, and join multiple data frames. Before we start, a quick review of the functions we talked about last time:
 
 -   `filter()`
 -   `select()`
 -   `summarize()`
+-   `tidyverse`
 
-Great! You remember everything.
+Great! You remember everything. Before we get going, let's do some brief R maintance. As we talked about last time, there are many packages and functions that we will want to use to do all sorts of interesting things in R. Many of these packages are updated frequently to add new functionality and get rid of bugs.
 
-Data Manipulation with the `gss_cat` Dataset
---------------------------------------------
+So we want to make sure we have the latest version of these packages installed on our local machine. The easiest way to do that is to click the "Packages" tab in the lower right hand pane and then click the "Update" button. When the "Update Packages" dialog box pops up, check "Select All" and then click "Update". This may take a few minutes if you have a lot of packages to update. It's good practice to update packages every week or so using this method.
 
-<<<<<<< HEAD
-We'll pick up [where we left off last time](https://github.com/mfherman/r-study-group/blob/master/docs/basic_data_manip.md) and continue using we'll work with a GSS dataset that is built into the `forcats` package. To access this data, first load the `forcats` library, then tell R we're going to be using data called `gss_cat`, and then open the data in the viewer to check it out. Try it!
-=======
-We'll pick up [where we left off last time](%22https://github.com/mfherman/r-study-group/blob/master/docs/basic_data_manip.md%22) ) and continue using we'll work with a GSS dataset that is built into the `forcats` package. To access this data, first load the `forcats` library, then tell R we're going to be using data called `gss_cat`, and then open the data in the viewer to check it out. Try it!
->>>>>>> f24d2f337a2a4450b1db1c72bdebe429adea00b3
+(More) Data Manipulation with the `gss_cat` Dataset
+---------------------------------------------------
 
-``` r
-library(forcats)
-data(gss_cat)
-View(gss_cat)
-```
-
-Great! It's there. It's a data frame! We can also look at the Environment pane in the upper right hand side of R Studio and we see an object called `gss_cat`. Click on the small blue arrow to left of `gss_cat` and you'll get an expanded list of all the variables in the data frame along with the variable types. You can also open the data viewer by clicking on the name of the data frame in the Environment pane.
-
-### Filter Rows with `filter()`
-
-Let's say we want to create a new dataset that is a subset of the main GSS dataset. Maybe we just want Black respondents. Or maybe we just want observations from after 2008. That's a job for the `filter()` function. `filter()` will return rows that match any criteria you feed to `filter()`.
-
-Let's start by creating a new data frame called `gss_black` that contains only respondents who reported their race to be Black.
+We'll pick up [where we left off last time](https://github.com/mfherman/r-study-group/blob/master/docs/basic_data_manip.md) and continue using the GSS dataset that is built into the `forcats` package. The very first thing we're going to do is load the `tidyverse` package. Remember from last session that `tidyverse` is a meta-package that includes a bunch of a good packages (including `forcats()`) for data exploration, manipulation, and analysis. In fact, I usually start all my scripts with `library(tidyverse)`. After we load `tidyverse`, tell R we're going to be using the `gss_cat`data.
 
 ``` r
 library(tidyverse)
 #> ── Attaching packages ─────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
-#> ✔ ggplot2 2.2.1.9000     ✔ readr   1.1.1.9000
-#> ✔ tibble  1.4.1          ✔ purrr   0.2.4.9000
-#> ✔ tidyr   0.7.2.9000     ✔ dplyr   0.7.4.9000
-#> ✔ ggplot2 2.2.1.9000     ✔ stringr 1.3.0
+#> ✔ ggplot2 2.2.1.9000     ✔ purrr   0.2.4.9000
+#> ✔ tibble  1.4.1.9000     ✔ dplyr   0.7.4.9000
+#> ✔ tidyr   0.7.2.9000     ✔ stringr 1.3.0     
+#> ✔ readr   1.1.1.9000     ✔ forcats 0.2.0.9000
 #> ── Conflicts ────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
 #> ✖ dplyr::lag()    masks stats::lag()
-gss_black <- filter(gss_cat, race == "Black")
-gss_black
-#> # A tibble: 3,129 x 9
-#>     year marital         age race   rincome        part… relig denom tvho…
-#>    <int> <fctr>        <int> <fctr> <fctr>         <fct> <fct> <fct> <int>
-#>  1  2000 Married          40 Black  $25000 or more Stro… Prot… Bapt…     7
-#>  2  2000 Married          45 Black  Not applicable Inde… Prot… Unit…    NA
-#>  3  2000 Married          55 Black  Not applicable Not … Prot… Other     1
-#>  4  2000 Divorced         36 Black  $15000 - 19999 Stro… None  Not …    NA
-#>  5  2000 Divorced         39 Black  Don't know     Inde… None  Not …    NA
-#>  6  2000 Never married    27 Black  $25000 or more Stro… Prot… Am b…     4
-#>  7  2000 Widowed          43 Black  Not applicable Inde… None  Not …     3
-#>  8  2000 Never married    34 Black  $15000 - 19999 Stro… Prot… Nat …    NA
-#>  9  2000 Widowed          83 Black  Not applicable Stro… Prot… Unit…    12
-#> 10  2000 Widowed          78 Black  Not applicable Stro… Other Not …     4
-#> # ... with 3,119 more rows
+data(gss_cat)
 ```
 
-The general syntax of the `filter()` function is `filter(data, logical_statement)`. So in this case, the data we used is the `gss_cat` data frame and the logical statment is `race == "Black"`. Note that we had to use `==`, not `=` because we are doing a comparison, not an assignment. In other words, we are asking R to compare all records in the race column of `gss_cat` to `"Black"` and return the ones where that condition is `TRUE`. Also note we needed to put `"Black"` in quotation marks for this to work.
-
-After we created the object `gss_black`, we printed `gss_black` to get a quick look at the dataset. We can see there are 3,129 observations of 9 variables. In addition, the first 10 rows of the dataset print in the console along with data type of each variable. This is a quick alternative to viewing the entire data frame in the viewer window.
-
-Next, we will further filter the `gss_black` data frame to only include observations in the 2010, 2012, and 2014 surveys.
+Do you remember how to examine a data frame? There are a few different ways. If you just want to look at the first 10 rows you can just type the name of the data frame in the console and hit Enter:
 
 ``` r
-gss_black_recent <- filter(gss_black, year > 2008)
-gss_black_recent
-#> # A tibble: 998 x 9
+gss_cat
+#> # A tibble: 21,483 x 9
 #>     year marital         age race   rincome        part… relig denom tvho…
 #>    <int> <fctr>        <int> <fctr> <fctr>         <fct> <fct> <fct> <int>
-#>  1  2010 Divorced         71 Black  Not applicable Stro… Cath… Not …     5
-#>  2  2010 Married          78 Black  Not applicable Inde… Prot… Other    NA
-#>  3  2010 Never married    40 Black  $10000 - 14999 Stro… None  Not …     4
-#>  4  2010 Divorced         46 Black  $25000 or more Ind,… Cath… Not …    NA
-#>  5  2010 Widowed          80 Black  Not applicable Not … Prot… Nat …     1
-#>  6  2010 Married          31 Black  Refused        Stro… Cath… Not …    NA
-#>  7  2010 Never married    NA Black  Refused        No a… Cath… Not …     1
-#>  8  2010 Never married    31 Black  $20000 - 24999 Stro… Cath… Not …     4
-#>  9  2010 Married          58 Black  $25000 or more Stro… Prot… Bapt…     2
-#> 10  2010 Never married    88 Black  Not applicable Not … Prot… Sout…     4
-#> # ... with 988 more rows
+#>  1  2000 Never married    26 White  $8000 to 9999  Ind,… Prot… Sout…    12
+#>  2  2000 Divorced         48 White  $8000 to 9999  Not … Prot… Bapt…    NA
+#>  3  2000 Widowed          67 White  Not applicable Inde… Prot… No d…     2
+#>  4  2000 Never married    39 White  Not applicable Ind,… Orth… Not …     4
+#>  5  2000 Divorced         25 White  Not applicable Not … None  Not …     1
+#>  6  2000 Married          25 White  $20000 - 24999 Stro… Prot… Sout…    NA
+#>  7  2000 Never married    36 White  $25000 or more Not … Chri… Not …     3
+#>  8  2000 Divorced         44 White  $7000 to 7999  Ind,… Prot… Luth…    NA
+#>  9  2000 Married          44 White  $25000 or more Not … Prot… Other     0
+#> 10  2000 Married          47 White  $25000 or more Stro… Prot… Sout…     3
+#> # ... with 21,473 more rows
 ```
 
-The `filter()` function relies on Boolean logic so you can use all of our usual logical operator friends when filtering:
+Alternatively, you can run the `View(gss_cat)` command or click on the name of the data frame in the Environment pane in the upper right of R Studio.
 
--   `==` (is equal to)
--   `!=` (is not equal to)
--   `<` (less than)
--   `>` (greater than)
--   `<=` (less than or equal to)
--   `>=` (greater than or equal to)
--   `&` (and)
--   `|` (or)
+### Add new variables with `mutate()`
 
-You can also combine operations into one `filter()` call. For example, let's create a new data frame that is only white Protestants over the age of 50.
+A common task you might need to do is to create a new variable that is in some way related to existing variables in your data set. This might be something relatively simple like changing hours into minutes or changing a continous variable into a categorical variablr. Or it could be a more complex manipulation that relies on several existing variables.
+
+Let's start by creating a new variable (column) that is hours of television watched per year. There is an existing varible, `tvhours`, which is the number of hours per day each respondent reported watching. Mathematically, this is very simple; we'll just multiply the number of hours watched per day by 365 to get the number of hours per year.
 
 ``` r
-trump_voters <- filter(gss_cat, race == "White" & age > 50 & relig == "Protestant")
-trump_voters
-#> # A tibble: 4,142 x 9
-#>     year marital    age race   rincome        partyid relig  denom   tvho…
-#>    <int> <fctr>   <int> <fctr> <fctr>         <fctr>  <fctr> <fctr>  <int>
-#>  1  2000 Widowed     67 White  Not applicable Indepe… Prote… No den…     2
-#>  2  2000 Married     53 White  $25000 or more Not st… Prote… Other       2
-#>  3  2000 Married     52 White  $25000 or more Strong… Prote… Southe…     1
-#>  4  2000 Married     51 White  $25000 or more Strong… Prote… United…    NA
-#>  5  2000 Widowed     82 White  Not applicable Not st… Prote… Other       3
-#>  6  2000 Widowed     83 White  Not applicable Strong… Prote… Episco…    NA
-#>  7  2000 Widowed     89 White  Not applicable Not st… Prote… Other …     4
-#>  8  2000 Widowed     88 White  Not applicable Strong… Prote… Afr me…    NA
-#>  9  2000 Divorced    72 White  Not applicable Strong… Prote… Southe…     7
-#> 10  2000 Widowed     82 White  Not applicable Indepe… Prote… Am bap…    NA
-#> # ... with 4,132 more rows
+gss_cat_tv <- gss_cat %>%
+  mutate(tvhours_year = tvhours * 365)
+gss_cat_tv
+#> # A tibble: 21,483 x 10
+#>     year marital         age race   rinco… party… relig  denom tvho… tvho…
+#>    <int> <fctr>        <int> <fctr> <fctr> <fctr> <fctr> <fct> <int> <dbl>
+#>  1  2000 Never married    26 White  $8000… Ind,n… Prote… Sout…    12  4380
+#>  2  2000 Divorced         48 White  $8000… Not s… Prote… Bapt…    NA    NA
+#>  3  2000 Widowed          67 White  Not a… Indep… Prote… No d…     2   730
+#>  4  2000 Never married    39 White  Not a… Ind,n… Ortho… Not …     4  1460
+#>  5  2000 Divorced         25 White  Not a… Not s… None   Not …     1   365
+#>  6  2000 Married          25 White  $2000… Stron… Prote… Sout…    NA    NA
+#>  7  2000 Never married    36 White  $2500… Not s… Chris… Not …     3  1095
+#>  8  2000 Divorced         44 White  $7000… Ind,n… Prote… Luth…    NA    NA
+#>  9  2000 Married          44 White  $2500… Not s… Prote… Other     0     0
+#> 10  2000 Married          47 White  $2500… Stron… Prote… Sout…     3  1095
+#> # ... with 21,473 more rows
 ```
+
+See that new variable at the end of the data frame? That's a lot of hours per year! The `mutate()` function looked at the value of `tvhours` and multiplied by 365, **in each row**. This is the important conceptual difference between `mutate()` and `summarize()`. Remember that we used `summarize()` when we wanted to calculate the mean (for example) for an entire data frame (or vector). In other words, we use `summarize()` when we want to calculate one value for an entire data frame. But we use `mutate()` when we want calculate one value for *each row* in a data frame.
+
+The `mutate()` function has a similar syntax to the the `select()` function we covered last session. The general form of `mutate()` is `mutate(data, new_var = some_calculation)`. And remember, this function will add a new variable with values for each row to the data frame you feed into `mutate()`.
+
+### Add more complex new variables with `mutate()` and `case_when()`
+
+The next example is a more complex use of `mutate()` and also introduces a new function, `case_when()`. Currently, `age` is a continuois numeric variable. But let's say we want to create a new age variable with 3 categories: under 35, 35 to 64, and 65 and over.
+
+``` r
+gss_cat_age <- gss_cat_tv %>% 
+  mutate(
+    age_cat = case_when(
+      age < 35 ~ "Young",
+      age >=35 & age < 65 ~ "Middle Aged",
+      age >= 65 ~ "Old"
+      )
+    )
+gss_cat_age
+#> # A tibble: 21,483 x 11
+#>     year marit…   age race   rinco… party… relig  denom  tvho… tvho… age_…
+#>    <int> <fctr> <int> <fctr> <fctr> <fctr> <fctr> <fctr> <int> <dbl> <chr>
+#>  1  2000 Never…    26 White  $8000… Ind,n… Prote… South…    12  4380 Young
+#>  2  2000 Divor…    48 White  $8000… Not s… Prote… Bapti…    NA    NA Midd…
+#>  3  2000 Widow…    67 White  Not a… Indep… Prote… No de…     2   730 Old  
+#>  4  2000 Never…    39 White  Not a… Ind,n… Ortho… Not a…     4  1460 Midd…
+#>  5  2000 Divor…    25 White  Not a… Not s… None   Not a…     1   365 Young
+#>  6  2000 Marri…    25 White  $2000… Stron… Prote… South…    NA    NA Young
+#>  7  2000 Never…    36 White  $2500… Not s… Chris… Not a…     3  1095 Midd…
+#>  8  2000 Divor…    44 White  $7000… Ind,n… Prote… Luthe…    NA    NA Midd…
+#>  9  2000 Marri…    44 White  $2500… Not s… Prote… Other      0     0 Midd…
+#> 10  2000 Marri…    47 White  $2500… Stron… Prote… South…     3  1095 Midd…
+#> # ... with 21,473 more rows
+```
+
+Alright! We added another new variable to the data frame with values in each row. This new variable is called `age_cat` and has three possible values—`Young`, `Middle Aged`, and `Old`—that correspond to the age of the respondent.
+
+Let's break down how that worked. First, we get a new value for each row because we used `mutate()`. This new value is in a column called `age_cat`. In the `mutate()` call, we are creating a new varible called `age_cat` and then defining how to create this new variable. In the previous example, this defition was the same calculation for each row `tvhours * 365`. But in this case, we conditionally define the value of a new variable depending on the value of an existing variable. So, we look at the `age` variable and if `age` is less than 35, we want the value of `age_cat` to be `Young`. If `age` is betweeen 35 and 64, then the value of `age_cat` will be `Middle Aged` and if `age` is more than 64, then the value of `age_cat` will be `Old`.
+
+The easiest way to do this is with the `case_when()` funciton. One way to think about `case_when()` ais s a series of if...then statements. If `age` is `some_value`, then `age_cat` is `some_other_value`.
+
+The general sytnax of `case_when()` is `case_when(condition ~ result)`. The condition is most often some sort of logical statement that uses one or more Boolean operator (`==,`!=`,`&lt;`,`&gt;\`, etc.) and the result is what you want the value of the new variable to be. (The only limitation is that if you have more than one
+
+loYou can add as many condition &gt; result pairs as you want in each `case_when()` call by separating them by with commas.
 
 ### Select columns with `select()`
 
@@ -267,9 +272,3 @@ There's a lot I threw into that code, but the main point is that `ggplot2` is en
 If you want to jump into `ggplot2`, I highly recommend the [visualization chapter from R for Data Science](http://r4ds.had.co.nz/data-visualisation.html).
 
 Ok, that's it for today. More next time on adding new variables, joining data frames, and more!
-
-    #> ⬢ __  _    __   .    ⬡           ⬢  . 
-    #>  / /_(_)__/ /_ ___  _____ _______ ___ 
-    #> / __/ / _  / // / |/ / -_) __(_-</ -_)
-    #> \__/_/\_,_/\_, /|___/\__/_/ /___/\__/ 
-    #>      ⬢  . /___/      ⬡      .       ⬢
