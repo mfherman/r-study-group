@@ -169,7 +169,7 @@ library(tidyverse)
 
   - `?function_name`
   - Package vignettes
-  - [R for Data Science](https://r4ds.had.co.nz)/
+  - [R for Data Science](https://r4ds.had.co.nz)
   - [RStudio
     Cheatsheets](https://www.rstudio.com/resources/cheatsheets/)
   - [RStudio Community](http://community.rstudio.com)
