@@ -1,7 +1,7 @@
 Basic Data Manupulation in R Part 2
 ================
 Matt Herman
-2019-01-30
+2019-02-08
 
 ## Introduction
 
@@ -44,12 +44,12 @@ tell R we’re going to be using the `gss_cat`data.
 
 ``` r
 library(tidyverse)
-#> -- Attaching packages --------------------------------------------------- tidyverse 1.2.1 --
+#> -- Attaching packages --------------------------------------------- tidyverse 1.2.1 --
 #> v ggplot2 3.1.0     v purrr   0.3.0
 #> v tibble  2.0.1     v dplyr   0.8.0
 #> v tidyr   0.8.2     v stringr 1.3.1
 #> v readr   1.3.1     v forcats 0.3.0
-#> -- Conflicts ------------------------------------------------------ tidyverse_conflicts() --
+#> -- Conflicts ------------------------------------------------ tidyverse_conflicts() --
 #> x dplyr::filter() masks stats::filter()
 #> x dplyr::lag()    masks stats::lag()
 data(gss_cat)
@@ -193,204 +193,3 @@ or more Boolean operator (`==`, `!=`, `<`, `>`, etc.) and the result is
 what you want the value of the new variable to be. So in our exampe
 above, the first condition, is `age < 35` and the result is `Young`. We
 then continue for the two other condtions.
-
-Now we’re \#\#\# Select columns with `select()` Now that we’ve filtered
-our data frames, maybe we also want to get rid of some variables we
-don’t need for our analysis. This is a job for the `select()`
-function. It helps us select the columns to keep in our data frame and
-discards the rest.
-
-``` r
-gss_small <- select(gss_cat, year, age, race, tvhours)
-gss_small
-#> # A tibble: 21,483 x 4
-#>     year   age race  tvhours
-#>    <int> <int> <fct>   <int>
-#>  1  2000    26 White      12
-#>  2  2000    48 White      NA
-#>  3  2000    67 White       2
-#>  4  2000    39 White       4
-#>  5  2000    25 White       1
-#>  6  2000    25 White      NA
-#>  7  2000    36 White       3
-#>  8  2000    44 White      NA
-#>  9  2000    44 White       0
-#> 10  2000    47 White       3
-#> # ... with 21,473 more rows
-```
-
-You can include as many variables as you want after the `data` argument
-of `filter()` by separating them with commas. Another nice feature of
-the `select()` function is the ability to rename columns as you select
-them. Let’s select the same columns as above, but rename tvhours to
-weekly\_tv.
-
-``` r
-gss_rename <- select(gss_cat, year, age, race, weekly_tv = tvhours)
-gss_rename
-#> # A tibble: 21,483 x 4
-#>     year   age race  weekly_tv
-#>    <int> <int> <fct>     <int>
-#>  1  2000    26 White        12
-#>  2  2000    48 White        NA
-#>  3  2000    67 White         2
-#>  4  2000    39 White         4
-#>  5  2000    25 White         1
-#>  6  2000    25 White        NA
-#>  7  2000    36 White         3
-#>  8  2000    44 White        NA
-#>  9  2000    44 White         0
-#> 10  2000    47 White         3
-#> # ... with 21,473 more rows
-```
-
-To generalize, the syntax here is `select(data, new_col_name =
-old_col_name)`.
-
-### Summary statistics with `summarize()`
-
-We can also calculate summary statistics with the `summarize()`
-function.
-
-``` r
-summarize(gss_cat,
-          n = n(),
-          age_mean = mean(age, na.rm = TRUE),
-          age_med = median(age, na.rm = TRUE),
-          tv_mean = mean(tvhours, na.rm = TRUE)
-          )
-#> # A tibble: 1 x 4
-#>       n age_mean age_med tv_mean
-#>   <int>    <dbl>   <int>   <dbl>
-#> 1 21483     47.2      46    2.98
-```
-
-The general form of `summarize()` is `summarize(data, new_col_name =
-summary_function(variable))`. You can include as many summary variables
-as you want by adding new variables and summary functions after a comma.
-In the above example, we are creating four summary variables. One
-important note here is that I included `na.rm = TRUE` in the `mean()`
-and `median()` function calls. This ensures that any missing or `NA`
-data is dropped when computing the summary statistics. In this case, I
-know there is some missing data in these variables. If we hadn’t
-included `na.rm = TRUE`, the result would be `NA` because R does not
-know how to generate the mean or median from missing data unless we
-explicitly tell R what to do with the `NA` values.
-
-Next up is a simple, but powerful tool to extend the `summarize()`
-function: `group_by()`. Using this function we can generate grouped data
-summaries. Now we will calculate the same summary statistics as above,
-but instead of for the whole dataset, we will get means and medians
-segmented by race.
-
-``` r
-group_by(gss_cat, race) %>%
-  summarize(
-    n = n(),
-    age_mean = mean(age, na.rm = TRUE),
-    age_med = median(age, na.rm = TRUE),
-    tv_mean = mean(tvhours, na.rm = TRUE)
-  )
-#> # A tibble: 4 x 5
-#>   race               n age_mean age_med tv_mean
-#>   <fct>          <int>    <dbl>   <int>   <dbl>
-#> 1 Other           1959     39.5      37    2.76
-#> 2 Black           3129     43.9      42    4.18
-#> 3 White          16395     48.7      48    2.77
-#> 4 Not applicable     0    NaN        NA  NaN
-```
-
-Cool\! In this sample, we see that on average, Black people report
-watching more hours of TV than white people. Note that this is the exact
-same code as the last summary, except we added `group_by(gss_cat, race)
-%>%` before the `summarize()` function. This is saying that before you
-calculate the mean, group the data frame by the `race` variable and then
-calculate the mean for each group.
-
-Also, note the use of the `%>%` (pipe). We will talk about this in more
-detail in another session, but the important thing to know is that the
-pipe is used to chain functions together. We can think of what the pipe
-operator does as “and then.” So in plain English, what we did above was
-to group `gss_cat` by `race` and then `summarize` n, mean, and median
-for each group.
-
-## Let’s make a couple charts before we go
-
-One of the most powerful features of R is the many tools available to
-make beautiful and customizable visualizations. There is so much to
-learn on this front, but to start, we’re just going to make a couple of
-common and simple charts you could use when exploring a dataset.
-
-We might want to make a histogram to see the age distribution of our
-sample. That’s pretty simple with `ggplot2`, the main package for making
-static visualizations in R.
-
-``` r
-ggplot(gss_cat) +
-  geom_histogram(aes(age), binwidth = 1)
-#> Warning: Removed 76 rows containing non-finite values (stat_bin).
-```
-
-![](./output/figures/age%20histogram-1.png)<!-- -->
-
-Ok, that’s kind of boring. Let’s spice it up a little and look at the
-age distribution, but segmented by race. Maybe the white folks in the
-GSS sample are older than other races? For this, we’ll use a variation
-on the histogram, the density plot. Don’t worry too much about the
-mathematical details of the plot, just know it represents a smoothed
-version of a histogram.
-
-``` r
-ggplot(gss_cat) +
-  geom_density(aes(age, fill = race, color = race), alpha = 0.2)
-#> Warning: Removed 76 rows containing non-finite values (stat_density).
-```
-
-![](./output/figures/age%20density-1.png)<!-- -->
-
-That’s more interesting\! And pretty colors too\! Also, I was right—the
-white folks are older\!
-
-A different way of visualizing this distribution is with a bar chart
-where the x-axis is race the y-axis is the number of observations in
-each race.
-
-``` r
-ggplot(gss_cat) +
-  geom_bar(aes(race))
-```
-
-![](./output/figures/race%20bar%20plot-1.png)<!-- -->
-
-To add another variable to this chart, let’s also look at the
-distribution of marital status within each race. We’ll create a stacked
-bar chart where each bar segment represents the proportion that has each
-marital status. I’ll also change the colors and add a title, legend, and
-appropriate scale.
-
-``` r
-ggplot(gss_cat) +
-  geom_bar(aes(race, fill = marital), position = "fill") +
-  scale_fill_brewer(palette = "Set2", name = element_blank()) +
-  scale_y_continuous(labels = scales::percent) +
-  labs(
-    x = "Race",
-    y = element_blank(),
-    title = "Marital Status by Race",
-    subtitle = "General Social Survey, 2000 - 2014") +
-  theme_bw()
-```
-
-![](./output/figures/stacked%20bar%20plot-1.png)<!-- -->
-
-There’s a lot I threw into that code, but the main point is that
-`ggplot2` is endlessly customizable. As you add new features and options
-to a `ggplot` object, you combine the commands with `+`. This acts very
-much like `%>%` in that it chains multiple lines of code together.
-
-If you want to jump into `ggplot2`, I highly recommend the
-[visualization chapter from R for Data
-Science](http://r4ds.had.co.nz/data-visualisation.html).
-
-Ok, that’s it for today. More next time on adding new variables, joining
-data frames, and more\!

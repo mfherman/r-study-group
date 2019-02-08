@@ -10,21 +10,12 @@ primarily in code, instead of in Excel or SPSS. Once you get the hang of
 it, you’ll be able to do really impressive and powerful things in an
 efficient and reproducible way.
 
-One brief example to get you excited — with just a few lines of code
+One brief example to get you excited – with just a few lines of code
 you’ll be able to make maps like this:
 
 ``` r
-library(tidyverse, quietly = TRUE)
-## -- Attaching packages --------------------------------------------------- tidyverse 1.2.1 --
-## v ggplot2 3.1.0     v purrr   0.3.0
-## v tibble  2.0.1     v dplyr   0.8.0
-## v tidyr   0.8.2     v stringr 1.3.1
-## v readr   1.3.1     v forcats 0.3.0
-## -- Conflicts ------------------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
+library(tidyverse)
 library(sf)
-## Linking to GEOS 3.6.1, GDAL 2.2.3, PROJ 4.9.3
 library(nycgeo)
 
 mn_ntas <- nyc_boundaries(
@@ -53,14 +44,15 @@ ggplot(mn_ntas) +
 #### What’s the difference between R and RStudio?
 
   - R is a programming language
-  - RStudio is a IDE (integrated development environment)
+  - RStudio is an IDE (integrated development environment)
   - Most people use RStudio to interact with the R language
 
 #### How R is different from Excel/SPSS
 
   - Code (no menus\!)
-  - Think about objects and functions instead of one dataset
-  - Reproducible
+  - Reproducible and transparent
+  - Think about scripts, objects, and functions instead of one dataset
+      - “Code is real”
   - Free and open source
   - Thousands of add-on packages to do cool stuff
   - Large support and developer community
@@ -122,7 +114,7 @@ write_xlsx(my_df_2, "/mydirec/myfile.xlsx")
 #### shp, geojson, kml (pretty much any spatial data\!)
 
 ``` r
-library("sf")
+library(sf)
 my_sf <- read_sf("/mydirec/myshp.shp")
 write_sf(my_sf, "/mydirec/myshp.shp")
 ```
@@ -141,29 +133,41 @@ install.packages("tidyverse")
 library(tidyverse)
 ```
 
+You only need to install a package once, but you have to load it for
+each R session you run.
+
 #### Some important packages you should know about
 
 ##### tidyverse
 
-  - `dplyr` (data manipulation)
-  - `readr` (data import/export)
-  - `ggplot2` (data visualization)
-  - `tidyr` (data reshaping)
-  - `stringr` (working with text)
-  - `lubridate` (working with dates)
-  - `forcats` (working with categorical data)
+  - [`dplyr`](https://dplyr.tidyverse.org/) (data manipulation)
+  - [`readr`](https://readr.tidyverse.org/) (data import/export)
+  - [`ggplot2`](https://ggplot2.tidyverse.org) (data visualization)
+  - [`tidyr`](https://tidyr.tidyverse.org/) (data reshaping)
+  - [`stringr`](https://stringr.tidyverse.org) (working with text)
+  - [`lubridate`](https://lubridate.tidyverse.org/) (working with dates)
+  - [`forcats`](https://forcats.tidyverse.org) (working with categorical
+    data)
 
 ##### Accessing Census data
 
-  - `tidycensus` (download data from US Census API)
-  - `tigris` (download TIGER/Line shapefiles from US Census)
+  - [`tidycensus`](https://walkerke.github.io/tidycensus/) (download
+    data from US Census API)
+  - [`tigris`](https://github.com/walkerke/tigris) (download TIGER/Line
+    shapefiles from US Census)
 
 ##### Mapping
 
-  - `sf`
-  - `tmap`
-  - `mapview`
-  - `leaflet`
+  - [`sf`](https://r-spatial.github.io/sf/) (spatial data structure in
+    R)
+  - [`tmap`](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html)
+    (static and interactive plotting)
+  - [`mapview`](https://r-spatial.github.io/mapview/) (quick interactive
+    viewing)
+  - [`leaflet`](https://rstudio.github.io/leaflet/) (interactive map
+    development)
+  - [`nycgeo`](https://nycgeo.mattherman.info/) (my little package for
+    NYC spatial data)
 
 #### Where to find help
 
@@ -174,5 +178,5 @@ library(tidyverse)
     Cheatsheets](https://www.rstudio.com/resources/cheatsheets/)
   - [RStudio Community](http://community.rstudio.com)
   - [Stack Overflow](https://stackoverflow.com/questions/tagged/r)
-  - \#rstats
-  - DataCamp
+  - [\#rstats](https://twitter.com/hashtag/rstats)
+  - [DataCamp](https://www.datacamp.com/)
